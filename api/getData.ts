@@ -21,7 +21,6 @@ class GetDataApi {
         },
       });
       return response.data.data;
-
     } catch (error) {
       console.warn(error);
       return null;

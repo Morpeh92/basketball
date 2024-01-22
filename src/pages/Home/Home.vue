@@ -10,11 +10,11 @@ const list = ref<Player[] | null>(null);
 const value = ref<string>('');
 const nextItems = ref(25);
 const buttonDisable = ref<boolean>(false);
-const is = ref<boolean>(false);
+const toggleView = ref<boolean>(false);
 
 watchEffect(async () => {
   const data = await getDataApi.getData(API_URL, nextItems.value);
-  list.value = data
+  list.value = data;
   if (list.value?.length === 100) {
     buttonDisable.value = true;
   }
@@ -29,32 +29,52 @@ const filetArr = computed(() => {
 
   return list.value?.filter((item) => {
     if (value.value === '') {
-      return true
+      return true;
     }
-    return item.first_name.toLowerCase().includes(query) ||
+    return (
+      item.first_name.toLowerCase().includes(query) ||
       item.last_name.toLowerCase().includes(query) ||
       item.team.full_name.toLowerCase().includes(query) ||
-      item.team.id.toString().includes(query);
-  })
-})
+      item.team.id.toString().includes(query)
+    );
+  });
+});
 
-
+const handleClearInputValue = () => {
+  return (value.value = '');
+};
 </script>
 
 <template>
   <div :class="$style.wrapper">
     <MainHeader>
       <template #searchInput>
-        <SearhInput v-model:input-value="value" />
+        <SearhInput
+          :value="value"
+          :is-show-clear-button="Boolean(value)"
+          v-model:input-value="value"
+          @click-to-clear-button="handleClearInputValue()"
+        />
       </template>
     </MainHeader>
     <main :class="$style.main">
-      <div :class="$style.buttons">
-      <button @click="is = true">true</button>
-      <button @click="is = false">false</button>
-    </div>
-      <PlayerCardsList :is="is" :list="filetArr!" />
-      <ButtonLoadMore v-if="!buttonDisable" @clickToLoadMoreButton="handleLimit()" :is-disabled="buttonDisable" />
+      <div :class="$style.buttonsContainer">
+        <button :class="$style.buttonView" @click="toggleView = true">
+          Список
+        </button>
+        <button :class="$style.buttonView" @click="toggleView = false">
+          Карточки
+        </button>
+      </div>
+      <div :class="$style.plug" v-if="filetArr?.length === 0">
+        По вашему запросу ничего не найдено, попробуйте еще!
+      </div>
+      <PlayerCardsList :is="toggleView" :list="filetArr!" />
+      <ButtonLoadMore
+        v-if="!buttonDisable"
+        @clickToLoadMoreButton="handleLimit()"
+        :is-disabled="buttonDisable"
+      />
     </main>
     <MainFooter :wrapper-class="$style.footer" />
   </div>
@@ -70,7 +90,7 @@ const filetArr = computed(() => {
 
 .main {
   flex: auto;
-  background-color: #FFFEFE;
+  background-color: #fffefe;
   padding: 24px 32px;
 }
 
@@ -88,8 +108,31 @@ const filetArr = computed(() => {
   margin: 37px auto 62px;
 }
 
-.buttons {
+.buttonsContainer {
   width: 100px;
-  margin-left: auto;
+
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.plug {
+  font-size: 30px;
+  text-align: center;
+  margin-top: 150px;
+  margin-bottom: 100px;
+}
+
+.buttonView {
+  background-color: #ffcd6d;
+  border: none;
+  padding: 3px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ffde9d;
+  }
 }
 </style>

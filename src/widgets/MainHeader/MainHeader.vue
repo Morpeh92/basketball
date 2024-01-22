@@ -1,6 +1,3 @@
-<script setup lang="ts">
-</script>
-
 <template>
   <header :class="$style.wrapper">
     <slot name="searchInput"></slot>
@@ -11,7 +8,7 @@
 .wrapper {
   width: 100%;
   height: 60px;
-  background-color: #3A3A3A;
+  background-color: #3a3a3a;
   padding: 10px;
   display: flex;
   align-items: center;

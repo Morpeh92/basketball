@@ -4,6 +4,4 @@ import 'vue-router';
 
 export {};
 
-declare module 'vue-router' {
-  
-}
+declare module 'vue-router' {}
