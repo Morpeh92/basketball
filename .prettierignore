@@ -1,0 +1,9 @@
+.env
+.prettierignore
+yarn.lock
+dist
+.gitignore
+.env.example
+*.svg
+public/fonts
+.dockerignore
